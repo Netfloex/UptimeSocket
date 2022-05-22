@@ -30,4 +30,4 @@ jobs:
               with:
                   username: netfloex
                   token: ${{ secrets.DOCKERHUB_TOKEN }}
-                  tags: netfloex/UptimeSocket:latest
+                  tags: netfloex/uptimesocket:latest

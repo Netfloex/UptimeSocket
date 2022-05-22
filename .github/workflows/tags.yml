@@ -18,4 +18,4 @@ jobs:
               with:
                   username: netfloex
                   token: ${{ secrets.DOCKERHUB_TOKEN }}
-                  tags: netfloex/UptimeSocket:${{ steps.vars.outputs.tag }}
+                  tags: netfloex/uptimesocket:${{ steps.vars.outputs.tag }}
