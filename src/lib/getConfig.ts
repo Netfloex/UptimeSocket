@@ -50,8 +50,6 @@ export const getConfig = async (): Promise<OutputConfig | false> => {
 		const text = await readFile(path, "utf-8")
 		const validated = Config.safeParse(load(text))
 		if (validated.success) {
-			console.log(validated.data)
-
 			return validated.data
 		} else {
 			console.log("Error Parsing Config")

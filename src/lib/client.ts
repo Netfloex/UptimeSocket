@@ -6,6 +6,8 @@ import { io } from "socket.io-client"
 const log = (msg: unknown): void => console.log(chalk`[{yellow CLIENT}]`, msg)
 
 export const activateClient = async (): Promise<void> => {
+	log("Starting...")
+
 	const config = await getConfig()
 
 	if (!config) return
@@ -22,13 +24,35 @@ export const activateClient = async (): Promise<void> => {
 		}): Promise<void> => {
 			await Promise.all(
 				ntfy.map(async (ntfy) => {
-					await axios.post(ntfy, body, {
-						headers: {
-							Title: title,
-							Tags: tags,
-							Priority: 4,
-						},
-					})
+					await axios
+						.post<string | { topic: string; title: string }>(
+							ntfy,
+							body,
+							{
+								headers: {
+									Title: title,
+									Tags: tags,
+									Priority: 4,
+								},
+							},
+						)
+						.then((res) => {
+							if (typeof res.data == "string") {
+								console.log(
+									"Successfully sent message to " + ntfy,
+								)
+							} else if (typeof res.data == "object") {
+								if (
+									res.data &&
+									res.data.topic &&
+									res.data.title
+								) {
+									log(
+										chalk`Successfully sent {dim ${res.data.title}} to topic {dim ${res.data.topic}}`,
+									)
+								}
+							}
+						})
 				}),
 			)
 		}
@@ -38,7 +62,7 @@ export const activateClient = async (): Promise<void> => {
 			log(data)
 		})
 		client.on("connect", async () => {
-			log(chalk`Connected as ${client.id} to {dim ${server}}`)
+			log(chalk`Connected as {dim ${client.id}} to {dim ${server}}`)
 			await sendMessage({
 				title: `${name} is UP!`,
 				body: "Connected successfully",
@@ -58,7 +82,7 @@ export const activateClient = async (): Promise<void> => {
 		client.on("connect_error", (err) => {
 			log(chalk`Could not connect to {dim ${server}}:`)
 			if (err.message == "xhr poll error") {
-				console.log("Server Uit")
+				log("Could not reconnect")
 				return
 			}
 			console.log(err)
