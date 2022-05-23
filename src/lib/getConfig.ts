@@ -1,6 +1,8 @@
+import chalk from "chalk"
 import { pathExists, readFile } from "fs-extra"
 import { load } from "js-yaml"
 import { join } from "path"
+import { z } from "zod"
 
 type Config = {
 	[socket: string]: {
@@ -9,12 +11,56 @@ type Config = {
 	}
 }
 
-export const getConfig = async (): Promise<Config> => {
+const NtfySchema = z.string()
+const NtfyArraySchema = z.union([
+	NtfySchema.transform((str) => [str]),
+	NtfySchema.array(),
+])
+
+const Config = z.record(
+	z.string(),
+	NtfyArraySchema.transform((ntfy) => ({ name: null, ntfy })).or(
+		z.object({
+			name: z.string().optional(),
+			ntfy: NtfyArraySchema,
+		}),
+	),
+)
+// .transform((record) =>
+// 	Object.fromEntries(
+// 		Object.entries(record).map(([socket, options]) =>
+// 			typeof options == "string"
+// 				? [
+// 						socket,
+// 						{
+// 							name: socket,
+// 							ntfy: [options],
+// 						},
+// 				  ]
+// 				: [socket, options],
+// 		),
+// 	),
+// )
+
+type OutputConfig = z.output<typeof Config>
+
+export const getConfig = async (): Promise<OutputConfig | false> => {
 	const path = join(process.cwd(), "config", "config.yaml")
 	if (await pathExists(path)) {
 		const text = await readFile(path, "utf-8")
-		return load(text) as Config
+		const validated = Config.safeParse(load(text))
+		if (validated.success) {
+			console.log(validated.data)
+
+			return validated.data
+		} else {
+			console.log("Error Parsing Config")
+
+			console.log(validated.error)
+			return false
+		}
 	} else {
-		throw new Error("Could not find " + path)
+		console.log(chalk`Could not find config at {dim ${path}}`)
+		return false
 	}
 }
