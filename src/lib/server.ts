@@ -1,12 +1,22 @@
 import chalk from "chalk"
+import express from "express"
+import { createServer } from "http"
+import { join } from "path"
 import { Server } from "socket.io"
 
 const log = (msg: unknown): void => console.log(chalk`[{blue SERVER}]`, msg)
 
-export const server = new Server()
 export const activateServer = (port = 3000): void => {
+	const app = express()
+	const http = createServer(app)
+	const server = new Server(http)
+	http.listen(port)
+
+	app.use((_, res) => {
+		res.sendFile(join(process.cwd(), "src", "static", "index.html"))
+	})
+
 	log("Starting...")
-	server.listen(port)
 	log(chalk`Listening on port {bold ${port}}`)
 
 	server.on("connection", (socket) => {

@@ -20,10 +20,12 @@ const NtfyArraySchema = z.union([
 const Config = z.record(
 	z.string(),
 	NtfyArraySchema.transform((ntfy) => ({ name: null, ntfy })).or(
-		z.object({
-			name: z.string().optional(),
-			ntfy: NtfyArraySchema,
-		}),
+		z
+			.object({
+				name: z.string().optional(),
+				ntfy: NtfyArraySchema,
+			})
+			.strict(),
 	),
 )
 // .transform((record) =>
