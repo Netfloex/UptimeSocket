@@ -1,5 +1,5 @@
 import { getConfig } from "@lib"
-import axios from "axios"
+import { NotificationArgs, sendMessage } from "@utils"
 import chalk from "chalk"
 import { io } from "socket.io-client"
 
@@ -13,57 +13,23 @@ export const activateClient = async (): Promise<void> => {
 	if (!config) return
 
 	Object.entries(config).forEach(([server, { ntfy, name }]) => {
-		const sendMessage = async ({
-			title,
-			body,
-			tags,
-		}: {
-			title: string
-			body: string
-			tags: string
-		}): Promise<void> => {
+		const sendNtfysMessage = async (
+			opts: Omit<NotificationArgs, "ntfy">,
+		): Promise<void> => {
 			await Promise.all(
 				ntfy.map(async (ntfy) => {
-					await axios
-						.post<string | { topic: string; title: string }>(
-							ntfy,
-							body,
-							{
-								headers: {
-									Title: title,
-									Tags: tags,
-									Priority: 4,
-								},
-							},
-						)
-						.then((res) => {
-							if (typeof res.data == "string") {
-								console.log(
-									"Successfully sent message to " + ntfy,
-								)
-							} else if (typeof res.data == "object") {
-								if (
-									res.data &&
-									res.data.topic &&
-									res.data.title
-								) {
-									log(
-										chalk`Successfully sent {dim ${res.data.title}} to topic {dim ${res.data.topic}}`,
-									)
-								}
-							}
-						})
+					await sendMessage({
+						...opts,
+						ntfy,
+					})
 				}),
 			)
 		}
 		const client = io(server)
 
-		client.onAny((...data) => {
-			log(data)
-		})
 		client.on("connect", async () => {
 			log(chalk`Connected as {dim ${client.id}} to {dim ${server}}`)
-			await sendMessage({
+			await sendNtfysMessage({
 				title: `${name} is UP!`,
 				body: "Connected successfully",
 				tags: "tada,green_circle",
@@ -72,7 +38,7 @@ export const activateClient = async (): Promise<void> => {
 
 		client.on("disconnect", async (reason) => {
 			log(chalk`Got disconnected from {dim ${server}}`)
-			await sendMessage({
+			await sendNtfysMessage({
 				title: `${name} is DOWN!`,
 				body: reason,
 				tags: "warning,red_circle",
