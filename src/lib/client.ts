@@ -1,5 +1,5 @@
 import { getConfig } from "@lib"
-import { NotificationArgs, sendMessage } from "@utils"
+import { formatMs, NotificationArgs, sendMessage } from "@utils"
 import chalk from "chalk"
 import { io } from "socket.io-client"
 
@@ -13,6 +13,7 @@ export const activateClient = async (): Promise<void> => {
 	if (!config) return
 
 	Object.entries(config).forEach(([server, { ntfy, name }]) => {
+		let downSince: number | false = false
 		const sendNtfysMessage = async (
 			opts: Omit<NotificationArgs, "ntfy">,
 		): Promise<void> => {
@@ -29,15 +30,25 @@ export const activateClient = async (): Promise<void> => {
 
 		client.on("connect", async () => {
 			log(chalk`Connected as {dim ${client.id}} to {dim ${server}}`)
-			await sendNtfysMessage({
-				title: `${name} is UP!`,
-				body: "Connected successfully",
-				tags: "tada,green_circle",
-			})
+
+			if (downSince !== false) {
+				log(chalk`<{green UP}> ${name}`)
+				await sendNtfysMessage({
+					title: `${name} is UP!`,
+					body: `Connected successfully, server was down for ${formatMs(
+						Date.now() - downSince,
+					)}`,
+					tags: "tada,green_circle",
+				})
+				downSince = false
+			}
 		})
 
 		client.on("disconnect", async (reason) => {
 			log(chalk`Got disconnected from {dim ${server}}`)
+			log(chalk`<{red DOWN}> ${name}`)
+
+			downSince = Date.now()
 			await sendNtfysMessage({
 				title: `${name} is DOWN!`,
 				body: reason,
@@ -48,7 +59,13 @@ export const activateClient = async (): Promise<void> => {
 		client.on("connect_error", (err) => {
 			log(chalk`Could not connect to {dim ${server}}:`)
 			if (err.message == "xhr poll error") {
-				log("Could not reconnect")
+				log(
+					`Server is down${
+						downSince !== false
+							? ` for ${formatMs(Date.now() - downSince)}`
+							: ""
+					}`,
+				)
 				return
 			}
 			console.log(err)

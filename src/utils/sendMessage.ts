@@ -22,15 +22,9 @@ export const sendMessage = async ({
 				Priority: 4,
 			},
 		})
-		.then((res) => {
-			if (typeof res.data == "string") {
-				console.log("Successfully sent message to " + ntfy)
-			} else if (typeof res.data == "object") {
-				if (res.data && res.data.topic && res.data.title) {
-					console.log(
-						chalk`[{green NTFY}] Successfully sent {dim ${res.data.title}} to topic {dim ${res.data.topic}}`,
-					)
-				}
-			}
+		.then(() => {
+			console.log(
+				chalk`[{green NTFY}] Successfully sent {dim {bold ${title}}} {dim ${body}}`,
+			)
 		})
 }
