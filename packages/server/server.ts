@@ -9,9 +9,8 @@ const log = (msg: unknown): void => console.log(chalk`[{blue SERVER}]`, msg)
 export const activateServer = (port = 3000): void => {
 	const app = express()
 	const http = createServer(app)
-	const server = new Server(http)
+	const server = new Server(http, { cors: { origin: "*" } })
 	http.listen(port)
-
 	app.use(express.static(settings.staticPath))
 
 	log("Starting...")

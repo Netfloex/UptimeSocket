@@ -1,3 +1,3 @@
 import { activateServer } from "./server"
 
-activateServer()
+activateServer(process.env.PORT ? parseInt(process.env.PORT) : undefined)

@@ -4,9 +4,11 @@
 		"paths": {
 			"react": ["../../node_modules/preact/compat/"],
 			"react-dom": ["../../node_modules/preact/compat/"],
-			"@pages/*": ["pages/*"]
+			"@pages/*": ["src/pages/*"],
+			"@components/*": ["src/components/*"],
+			"@hooks/*": ["src/utils/hooks/*"]
 		},
-
+		"types": ["vite/client"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact"
 	},
