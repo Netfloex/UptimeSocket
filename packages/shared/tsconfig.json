@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"downlevelIteration": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"incremental": true,
+		"module": "esnext",
+		"moduleResolution": "node",
+		"noEmit": true,
+		"outDir": "dist",
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ES5",
+		"typeRoots": ["src/typings", "node_modules/@types"]
+	},
+	"ts-node": {
+		"compilerOptions": {
+			"module": "commonjs"
+		}
+	}
+}

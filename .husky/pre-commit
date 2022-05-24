@@ -1,5 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn typescript
+yarn typescript:client
+yarn typescript:server
+yarn typescript:frontend
 yarn lint

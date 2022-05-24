@@ -1,9 +1,8 @@
 **
 
+
+!/entrypoint.js
 !/package.json
+!/packages/**
 !/rollup.config.ts
-!/src/**
-!/tsconfig.json
-!/tsconfig.node.json
-!/vite.config.ts
 !/yarn.lock

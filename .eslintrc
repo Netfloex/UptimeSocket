@@ -15,7 +15,7 @@
 		"sourceType": "module"
 	},
 	"plugins": ["@typescript-eslint", "import"],
-	"ignorePatterns": ["/dist"],
+	"ignorePatterns": ["/dist", "/entrypoint.js"],
 	"rules": {
 		"@typescript-eslint/explicit-function-return-type": ["error"],
 		"@typescript-eslint/no-non-null-assertion": 0,

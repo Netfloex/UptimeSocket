@@ -4,5 +4,6 @@
 		"module": "esnext",
 		"moduleResolution": "node"
 	},
-	"include": ["vite.config.ts"]
+	"include": ["packages/frontend/vite.config.ts"],
+	"references": [{ "path": "tsconfig.node.json" }]
 }

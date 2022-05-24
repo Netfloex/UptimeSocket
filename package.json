@@ -9,7 +9,10 @@
 		"dev": "tsnd --respawn -T --rs --cls -r tsconfig-paths/register src",
 		"lint": "eslint .",
 		"prepare": "husky install",
-		"typescript": "tsc"
+		"typescript:client": "tsc -p packages/client",
+		"typescript:server": "tsc -p packages/server",
+		"typescript:frontend": "tsc -p packages/frontend",
+		"build:frontend": "vite build packages/frontend/"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "^2.2.0",

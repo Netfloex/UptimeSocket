@@ -1,4 +1,4 @@
-import { settings } from "@lib"
+import { settings } from "@utils"
 import chalk from "chalk"
 import express from "express"
 import { createServer } from "http"

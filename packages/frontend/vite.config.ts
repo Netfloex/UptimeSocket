@@ -4,11 +4,10 @@ import { join } from "path"
 import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 
-// https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
 		preact(),
-		tsconfigPaths({ root: process.cwd() }),
+		tsconfigPaths(),
 		alias({
 			entries: [
 				{ find: "react", replacement: "preact/compat" },
@@ -24,13 +23,7 @@ export default defineConfig({
 			],
 		}),
 	],
-	root: join(process.cwd(), "src", "static"),
 	build: {
 		outDir: join(process.cwd(), "dist", "static"),
-		rollupOptions: {
-			input: {
-				main: join(process.cwd(), "src", "static", "index.html"),
-			},
-		},
 	},
 })
