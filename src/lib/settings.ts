@@ -5,10 +5,7 @@ const r = (env: string | undefined, or: string): string =>
 
 const joinCwd = (...paths: string[]): string => join(process.cwd(), ...paths)
 
-export const htmlPath = r(
-	process.env.HTML_PATH,
-	joinCwd("src", "static", "index.html"),
-)
+export const staticPath = r(process.env.STATIC_PATH, joinCwd("dist", "static"))
 
 export const configPath = r(
 	process.env.CONFIG_PATH,

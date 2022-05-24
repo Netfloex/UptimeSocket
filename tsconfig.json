@@ -12,16 +12,22 @@
 		"paths": {
 			"@lib": ["src/lib"],
 			"@typings/*": ["src/typings/*"],
-			"@utils": ["src/utils"]
+			"@utils": ["src/utils"],
+			"react": ["../../node_modules/preact/compat/"],
+			"react-dom": ["../../node_modules/preact/compat/"],
+			"@pages/*": ["src/static/pages/*"]
 		},
 		"skipLibCheck": true,
 		"strict": true,
 		"target": "ES5",
-		"typeRoots": ["src/typings", "node_modules/@types"]
+		"typeRoots": ["src/typings", "node_modules/@types"],
+		"jsx": "react-jsx",
+		"jsxImportSource": "preact"
 	},
 	"ts-node": {
 		"compilerOptions": {
 			"module": "commonjs"
 		}
-	}
+	},
+	"references": [{ "path": "tsconfig.node.json" }]
 }

@@ -12,9 +12,7 @@ export const activateServer = (port = 3000): void => {
 	const server = new Server(http)
 	http.listen(port)
 
-	app.use((_, res) => {
-		res.sendFile(settings.htmlPath)
-	})
+	app.use(express.static(settings.staticPath))
 
 	log("Starting...")
 	log(chalk`Listening on port {bold ${port}}`)
