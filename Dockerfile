@@ -3,7 +3,12 @@ ARG NODE_IMAGE=node:12-alpine
 FROM $NODE_IMAGE AS deps
 WORKDIR /app
 
+# Copy all package.json's
 COPY package.json yarn.lock ./
+COPY packages/client/package.json ./packages/client/
+COPY packages/server/package.json ./packages/server/
+COPY packages/frontend/package.json ./packages/frontend/
+
 RUN yarn install --frozen-lockfile
 
 FROM $NODE_IMAGE AS builder
@@ -13,7 +18,7 @@ COPY package.json yarn.lock rollup.config.ts ./
 COPY packages ./packages
 COPY --from=deps /app/node_modules ./node_modules
 
-RUN yarn build && yarn build:frontend
+RUN yarn build
 
 FROM alpine AS runner
 WORKDIR /app
