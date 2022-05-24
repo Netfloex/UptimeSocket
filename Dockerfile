@@ -21,6 +21,8 @@ RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/v3.11/m
 
 
 COPY --from=builder /app/dist/index.js .
+COPY src/static/index.html ./
+ENV HTML_PATH index.html
 
 
 CMD [ "node", "index.js" ]

@@ -1,7 +1,7 @@
+import { settings } from "@lib"
 import chalk from "chalk"
 import { pathExists, readFile } from "fs-extra"
 import { load } from "js-yaml"
-import { join } from "path"
 import { z } from "zod"
 
 type Config = {
@@ -47,7 +47,7 @@ const Config = z.record(
 type OutputConfig = z.output<typeof Config>
 
 export const getConfig = async (): Promise<OutputConfig | false> => {
-	const path = join(process.cwd(), "config", "config.yaml")
+	const path = settings.configPath
 	if (await pathExists(path)) {
 		const text = await readFile(path, "utf-8")
 		const validated = Config.safeParse(load(text))

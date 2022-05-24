@@ -1,7 +1,7 @@
+import { settings } from "@lib"
 import chalk from "chalk"
 import express from "express"
 import { createServer } from "http"
-import { join } from "path"
 import { Server } from "socket.io"
 
 const log = (msg: unknown): void => console.log(chalk`[{blue SERVER}]`, msg)
@@ -13,7 +13,7 @@ export const activateServer = (port = 3000): void => {
 	http.listen(port)
 
 	app.use((_, res) => {
-		res.sendFile(join(process.cwd(), "src", "static", "index.html"))
+		res.sendFile(settings.htmlPath)
 	})
 
 	log("Starting...")
