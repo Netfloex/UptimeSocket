@@ -6,5 +6,11 @@
 			"@utils": ["utils"]
 		}
 	},
-	"extends": "../shared/tsconfig.json"
+	"extends": "../shared/tsconfig.json",
+
+	"ts-node": {
+		"compilerOptions": {
+			"module": "commonjs"
+		}
+	}
 }

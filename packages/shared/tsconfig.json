@@ -13,10 +13,5 @@
 		"strict": true,
 		"target": "ES5",
 		"typeRoots": ["src/typings", "node_modules/@types"]
-	},
-	"ts-node": {
-		"compilerOptions": {
-			"module": "commonjs"
-		}
 	}
 }

@@ -1,10 +1,16 @@
 {
-	"extends": "../shared/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
 			"@lib": ["lib"],
 			"@utils": ["utils"]
+		}
+	},
+
+	"extends": "../shared/tsconfig.json",
+	"ts-node": {
+		"compilerOptions": {
+			"module": "commonjs"
 		}
 	}
 }

@@ -13,7 +13,7 @@ jobs:
               uses: netfloex/actions/yarn@master
 
             - name: Check Types
-              run: yarn typescript:client && yarn typescript:server && yarn typescript:frontend
+              run: yarn typescript
 
             - name: Test ESLint
               run: yarn lint

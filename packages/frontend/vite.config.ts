@@ -24,6 +24,6 @@ export default defineConfig({
 		}),
 	],
 	build: {
-		outDir: join(process.cwd(), "dist", "static"),
+		outDir: join(process.cwd(), "..", "..", "dist", "static"),
 	},
 })
