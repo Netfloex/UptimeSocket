@@ -26,7 +26,7 @@ export const activateClient = async (): Promise<void> => {
 				}),
 			)
 		}
-		const client = io(server)
+		const client = io(server, { transports: ["websocket", "polling"] })
 
 		client.on("connect", async () => {
 			log(chalk`Connected as {dim ${client.id}} to {dim ${server}}`)
@@ -58,7 +58,7 @@ export const activateClient = async (): Promise<void> => {
 
 		client.on("connect_error", (err) => {
 			log(chalk`Could not connect to {dim ${server}}:`)
-			if (err.message == "xhr poll error") {
+			if (["xhr poll error", "websocket error"].includes(err.message)) {
 				log(
 					`Server is down${
 						downSince !== false
