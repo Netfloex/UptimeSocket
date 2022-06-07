@@ -1,3 +1,4 @@
 import { activateClient } from "./client"
+import yn from "yn"
 
-activateClient()
+yn(process.env.CLIENT, { default: true }) && activateClient()
