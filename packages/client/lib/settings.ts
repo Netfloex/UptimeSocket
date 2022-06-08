@@ -9,3 +9,5 @@ export const configPath = r(
 	process.env.CONFIG_PATH,
 	joinCwd("config", "config.yaml"),
 )
+
+export const ntfyMinimum = parseInt(process.env.NTFY_MINIMUM ?? "") || 5000

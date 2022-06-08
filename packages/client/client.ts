@@ -1,6 +1,7 @@
 import { getConfig } from "@lib"
 import { formatMs, NotificationArgs, sendMessage } from "@utils"
 import chalk from "chalk"
+import { ntfyMinimum } from "lib/settings"
 import { io } from "socket.io-client"
 
 const log = (msg: unknown): void => console.log(chalk`[{yellow CLIENT}]`, msg)
@@ -14,6 +15,9 @@ export const activateClient = async (): Promise<void> => {
 
 	Object.entries(config).forEach(([server, { ntfy, name }]) => {
 		let downSince: number | false = false
+		let messageSent = false
+		const timeouts: NodeJS.Timeout[] = []
+
 		const sendNtfysMessage = async (
 			opts: Omit<NotificationArgs, "ntfy">,
 		): Promise<void> => {
@@ -31,7 +35,9 @@ export const activateClient = async (): Promise<void> => {
 		client.on("connect", async () => {
 			log(chalk`Connected as {dim ${client.id}} to {dim ${server}}`)
 
-			if (downSince !== false) {
+			timeouts.forEach((timeout) => clearTimeout(timeout))
+			timeouts.length = 0
+			if (downSince !== false && messageSent) {
 				log(chalk`<{green UP}> ${name}`)
 				await sendNtfysMessage({
 					title: `${name} is UP!`,
@@ -41,19 +47,27 @@ export const activateClient = async (): Promise<void> => {
 					tags: "tada,green_circle",
 				})
 				downSince = false
+				messageSent = false
 			}
 		})
 
 		client.on("disconnect", async (reason) => {
 			log(chalk`Got disconnected from {dim ${server}}`)
-			log(chalk`<{red DOWN}> ${name}`)
 
 			downSince = Date.now()
-			await sendNtfysMessage({
-				title: `${name} is DOWN!`,
-				body: reason,
-				tags: "warning,red_circle",
-			})
+			timeouts.push(
+				setTimeout(async () => {
+					if (client.disconnected) {
+						log(chalk`<{red DOWN}> ${name}`)
+						await sendNtfysMessage({
+							title: `${name} is DOWN!`,
+							body: reason,
+							tags: "warning,red_circle",
+						})
+						messageSent = true
+					}
+				}, ntfyMinimum),
+			)
 		})
 
 		client.on("connect_error", (err) => {
